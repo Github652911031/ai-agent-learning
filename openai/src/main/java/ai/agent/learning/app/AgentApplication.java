@@ -76,7 +76,7 @@ public class AgentApplication {
                 String userPrompt = args[1];
                 Map<String, RunSimple> beans = ctx.getBeansOfType(RunSimple.class);
                 RunSimple runner = beans.values().stream()
-                        .filter(r -> r.getClass().getSimpleName().toLowerCase().contains(lesson.toLowerCase()))
+                        .filter(r -> r.getClass().getSimpleName().toLowerCase().contains(lesson.toLowerCase().concat("runsimple")))
                         .findFirst()
                         .orElse(null);
 

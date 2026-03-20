@@ -1,0 +1,93 @@
+{
+  "meta": { "title": "AI Agent 学习教程", "description": "使用 OpenAI Java SDK 从零构建 AI Agent — 14 节渐进式课程" },
+  "nav": { "home": "首页", "timeline": "学习路径", "compare": "课程对比", "layers": "架构层", "github": "GitHub" },
+  "home": {
+    "hero_title": "AI Agent 学习教程",
+    "hero_subtitle": "使用 OpenAI Java SDK 从零构建 AI Agent — 14 节渐进式课程，从基础聊天循环到多 Agent 协作",
+    "start": "开始学习",
+    "core_pattern": "核心模式",
+    "core_pattern_desc": "所有 AI Agent 共享同一个内核：调用模型、执行工具、回传结果。每节课在此基础上增加一个新机制。",
+    "learning_path": "学习路径",
+    "learning_path_desc": "14 节渐进式课程，从简单聊天循环到自主多 Agent 执行",
+    "layers_title": "架构层次",
+    "layers_desc": "五个正交关注点组合成完整的 Agent 系统",
+    "loc": "行",
+    "learn_more": "了解更多",
+    "lessons_in_layer": "节课",
+    "message_flow": "消息增长",
+    "message_flow_desc": "观察 Agent 循环执行时消息数组的增长"
+  },
+  "lesson": {
+    "loc": "行代码",
+    "tools": "个工具",
+    "new": "新增",
+    "prev": "上一课",
+    "next": "下一课",
+    "view_source": "查看源码",
+    "tab_learn": "学习",
+    "tab_code": "源码",
+    "key_insight": "核心洞察"
+  },
+  "timeline": {
+    "title": "学习路径",
+    "subtitle": "第 0 课到第 13 课：使用 OpenAI Java SDK 渐进式 Agent 设计",
+    "layer_legend": "层次图例",
+    "loc_growth": "代码量增长",
+    "learn_more": "了解更多"
+  },
+  "layers": {
+    "title": "架构层次",
+    "subtitle": "五个正交关注点组合成完整的 Agent",
+    "tools": "Agent 能做什么。基础层：工具赋予模型与外部世界交互的能力。",
+    "planning": "如何组织工作。从简单的待办列表到跨 Agent 共享的依赖感知任务板。",
+    "memory": "在上下文限制内保持记忆。压缩策略让 Agent 可以无限工作而不失去连贯性。",
+    "concurrency": "非阻塞执行。后台线程和通知总线实现并行工作。",
+    "collaboration": "多 Agent 协作。团队、消息传递、协议和能独立思考的自主队友。"
+  },
+  "compare": {
+    "title": "课程对比",
+    "subtitle": "查看任意两节课之间的变化",
+    "select_a": "课程 A",
+    "select_b": "课程 B",
+    "loc_delta": "代码量差异",
+    "lines": "行",
+    "new_tools_in_b": "B 中新增工具",
+    "new_classes_in_b": "B 中新增类",
+    "new_methods_in_b": "B 中新增方法",
+    "tool_comparison": "工具对比",
+    "only_in": "仅在",
+    "shared": "共有",
+    "none": "无",
+    "source_diff": "源码差异",
+    "empty_hint": "请在上方选择两节课进行对比。"
+  },
+  "diff": {
+    "new_classes": "新增类",
+    "new_tools": "新增工具",
+    "new_methods": "新增方法",
+    "loc_delta": "代码量差异"
+  },
+  "lessons": {
+    "L00": "基础聊天循环",
+    "L01": "工具使用",
+    "L02": "多工具",
+    "L03": "待办管理",
+    "L04": "子 Agent",
+    "L05": "技能系统",
+    "L06": "上下文压缩",
+    "L07": "任务系统",
+    "L08": "后台任务",
+    "L09": "Agent 团队",
+    "L10": "团队协议",
+    "L11": "自主 Agent",
+    "L12": "工作树隔离",
+    "L13": "完整参考 Agent"
+  },
+  "layer_labels": {
+    "tools": "工具与执行",
+    "planning": "规划与协调",
+    "memory": "内存管理",
+    "concurrency": "并发",
+    "collaboration": "协作"
+  }
+}

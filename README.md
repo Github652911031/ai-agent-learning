@@ -1,5 +1,7 @@
 # AI Agent Learning
 
+[中文版](README_zh.md)
+
 A progressive, hands-on tutorial for building AI agents with the OpenAI Java SDK. Through 14 incremental lessons (Lesson 0–13), you'll learn to construct a full-featured autonomous agent from scratch — starting with a basic chat loop and ending with a multi-agent system capable of parallel task execution.
 
 ## Table of Contents
@@ -10,6 +12,7 @@ A progressive, hands-on tutorial for building AI agents with the OpenAI Java SDK
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Lessons](#lessons)
+- [Web Tutorial Site](#web-tutorial-site)
 - [Testing](#testing)
 - [License](#license)
 
@@ -21,6 +24,7 @@ A progressive, hands-on tutorial for building AI agents with the OpenAI Java SDK
 - Multi-agent collaboration with protocols (shutdown, plan approval)
 - Background task execution and context compression
 - 213 unit tests covering core components
+- Interactive web tutorial site with bilingual support (English / Chinese)
 
 ## Tech Stack
 
@@ -31,12 +35,16 @@ A progressive, hands-on tutorial for building AI agents with the OpenAI Java SDK
 | OpenAI Java SDK | 0.31.0 |
 | JUnit | 5 |
 | Maven | 3.8+ |
+| Next.js (Web) | 16.1 |
+| React (Web) | 19.2 |
+| Tailwind CSS (Web) | 4 |
 
 ## Prerequisites
 
 - JDK 17 or later
 - Maven 3.8+
 - An OpenAI API key
+- Node.js 18+ (for the web tutorial site)
 
 ## Getting Started
 
@@ -90,6 +98,17 @@ ai-agent-learning/
 │       │   └── lesson/              # Lesson 0–13 source files
 │       └── test/java/ai/agent/learning/
 │           └── lesson/              # Unit tests
+├── docs/                            # Bilingual documentation
+│   └── openai/
+│       ├── en/                      # English lesson docs
+│       └── zh/                      # Chinese lesson docs
+└── web/                             # Interactive tutorial website
+    ├── src/
+    │   ├── app/                     # Next.js App Router pages
+    │   ├── components/              # React components
+    │   ├── lib/                     # Utilities and constants
+    │   └── i18n/                    # Internationalization (en/zh)
+    └── scripts/                     # Build-time content extraction
 ```
 
 ## Lessons
@@ -110,6 +129,40 @@ ai-agent-learning/
 | 11 | Autonomous Agents | Idle-cycle task board polling with auto-claiming and identity re-injection |
 | 12 | Worktree Isolation | Directory-level isolation for parallel task execution |
 | 13 | Full Reference Agent | Capstone — combines every mechanism from Lessons 1–12 |
+
+### Architectural Layers
+
+The 14 lessons are organized into five orthogonal layers:
+
+| Layer | Lessons | Description |
+|-------|---------|-------------|
+| Tools & Execution | L00, L01, L02 | The foundation — tools give the model capabilities to interact with the world |
+| Planning & Coordination | L03, L04, L05, L07 | From simple todo lists to dependency-aware task boards |
+| Memory Management | L06 | Compression strategies that let agents work infinitely |
+| Concurrency | L08 | Background threads and notification buses for parallel work |
+| Collaboration | L09–L13 | Multi-agent coordination, protocols, and autonomous teammates |
+
+## Web Tutorial Site
+
+The project includes an interactive web tutorial built with Next.js, featuring:
+
+- **Bilingual interface** — switch between English and Chinese
+- **Learning path timeline** — visual progress through all 14 lessons
+- **Lesson pages** — documentation + syntax-highlighted Java source code
+- **Layer view** — lessons organized by architectural concern
+- **Compare tool** — side-by-side diff between any two lessons
+- **Dark mode** — automatic and manual theme switching
+- **Responsive design** — works on desktop and mobile
+
+### Run the web site locally
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Then open http://localhost:3000 in your browser.
 
 ## Testing
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "@/lib/i18n";
 import { Github, Menu, X, Sun, Moon } from "lucide-react";
 import { useState } from "react";
@@ -22,6 +22,7 @@ export function Header() {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const locale = useLocale();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
@@ -41,7 +42,7 @@ export function Header() {
 
   function switchLocale(newLocale: string) {
     const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-    window.location.href = newPath;
+    router.push(newPath);
   }
 
   return (

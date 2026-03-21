@@ -25,8 +25,22 @@
     "next": "Next",
     "view_source": "View Source",
     "tab_learn": "Learn",
+    "tab_simulate": "Simulate",
     "tab_code": "Code",
+    "tab_deep_dive": "Deep Dive",
     "key_insight": "Key Insight"
+  },
+  "sim": {
+    "no_scenario": "No simulation scenario available for this lesson.",
+    "click_play": "Click Play or Step to start the simulation."
+  },
+  "deep_dive": {
+    "architecture": "Architecture",
+    "design_decisions": "Design Decisions",
+    "execution_flow": "Execution Flow",
+    "whats_new": "What's New",
+    "no_decisions": "No design decisions documented for this lesson.",
+    "alternatives": "Alternatives Considered"
   },
   "timeline": {
     "title": "Learning Path",

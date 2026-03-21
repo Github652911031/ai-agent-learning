@@ -25,8 +25,22 @@
     "next": "下一课",
     "view_source": "查看源码",
     "tab_learn": "学习",
+    "tab_simulate": "模拟",
     "tab_code": "源码",
+    "tab_deep_dive": "深入探索",
     "key_insight": "核心洞察"
+  },
+  "sim": {
+    "no_scenario": "此课程暂无模拟场景。",
+    "click_play": "点击播放或单步按钮开始模拟。"
+  },
+  "deep_dive": {
+    "architecture": "架构",
+    "design_decisions": "设计决策",
+    "execution_flow": "执行流程",
+    "whats_new": "新增内容",
+    "no_decisions": "此课程暂无设计决策文档。",
+    "alternatives": "替代方案"
   },
   "timeline": {
     "title": "学习路径",

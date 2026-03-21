@@ -162,7 +162,7 @@ npm install
 npm run dev
 ```
 
-然后在浏览器中打开 http://localhost:3000。
+然后在浏览器中打开 http://localhost:3000/ai-agent-learning。
 
 ## 测试
 

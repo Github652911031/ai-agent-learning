@@ -189,7 +189,7 @@ mvn test
 
 ## Acknowledgments
 
-This project is inspired by [learn-claude-code](https://github.com/anthropics/learn-claude-code) (Python version).
+This project is inspired by [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) (Python version).
 
 ## License
 

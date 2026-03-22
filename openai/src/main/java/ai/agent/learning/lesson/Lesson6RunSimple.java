@@ -176,14 +176,22 @@ public class Lesson6RunSimple implements RunSimple {
 
     // -- Layer 1: micro_compact - replace old tool results with placeholders --
     private void microCompact(List<ChatCompletionMessageParam> messages) {
-        // In OpenAI SDK, tool results are stored as tool messages
-        // We need to find and compact old tool result content
-        // This is a simplified implementation - actual implementation would need
-        // to track tool_use_id mapping
-
-        // For simplicity, we'll track the number of tool calls and compact
-        // older tool result contents
-        // Note: Full implementation requires tracking tool_use_id to tool_name mapping
+        // Truncate tool results older than the last 6 messages to save context space.
+        // Recent results stay intact so the model can still reason about them.
+        int cutoff = Math.max(0, messages.size() - 6);
+        for (int i = 0; i < cutoff; i++) {
+            ChatCompletionMessageParam msg = messages.get(i);
+            if (msg.isTool()) {
+                ChatCompletionToolMessageParam tool = msg.asTool();
+                String content = tool.content().isText() ? tool.content().asText() : tool.content().toString();
+                if (content.length() > 200) {
+                    messages.set(i, ChatCompletionMessageParam.ofTool(ChatCompletionToolMessageParam.builder()
+                            .toolCallId(tool.toolCallId())
+                            .content(content.substring(0, 200) + "... [truncated]")
+                            .build()));
+                }
+            }
+        }
     }
 
     // -- Layer 2: auto_compact - save transcript, summarize, replace messages --

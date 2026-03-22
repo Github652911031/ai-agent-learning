@@ -280,7 +280,22 @@ public class Lesson13RunSimple implements RunSimple {
     }
 
     private void microCompact(List<ChatCompletionMessageParam> messages) {
-        // Simplified: just truncate large tool results
+        // Truncate tool results older than the last 6 messages to save context space.
+        // Recent results stay intact so the model can still reason about them.
+        int cutoff = Math.max(0, messages.size() - 6);
+        for (int i = 0; i < cutoff; i++) {
+            ChatCompletionMessageParam msg = messages.get(i);
+            if (msg.isTool()) {
+                ChatCompletionToolMessageParam tool = msg.asTool();
+                String content = tool.content().isText() ? tool.content().asText() : tool.content().toString();
+                if (content.length() > 200) {
+                    messages.set(i, ChatCompletionMessageParam.ofTool(ChatCompletionToolMessageParam.builder()
+                            .toolCallId(tool.toolCallId())
+                            .content(content.substring(0, 200) + "... [truncated]")
+                            .build()));
+                }
+            }
+        }
     }
 
     private List<ChatCompletionMessageParam> autoCompact(List<ChatCompletionMessageParam> messages) {

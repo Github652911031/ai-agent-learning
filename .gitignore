@@ -6,3 +6,6 @@ target/
 web/node_modules/
 web/.next/
 web/.pageview-count.json
+.team/
+.tasks/
+.transcripts/

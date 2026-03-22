@@ -1,3 +1,5 @@
+# The OpenAI Java SDK is provider-agnostic: it works with any OpenAI-compatible API.
+# Default points to OpenRouter; set OPENAI_BASE_URL=https://api.openai.com/v1 for OpenAI direct.
 openai:
   api-key: ${OPENAI_API_KEY:}
   base-url: ${OPENAI_BASE_URL:https://openrouter.ai/api/v1}

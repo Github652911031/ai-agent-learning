@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { User, Bot, Terminal, ArrowDownRight } from "lucide-react";
+import { User, Bot, Terminal, ArrowDownRight, Info } from "lucide-react";
 
 interface SimulatorMessageProps {
   step: {
-    type: "user_message" | "assistant_text" | "tool_call" | "tool_result";
+    type: "user_message" | "assistant_text" | "tool_call" | "tool_result" | "system_event";
     content: string;
     toolName?: string;
     annotation?: string;
@@ -38,6 +38,12 @@ const TYPE_CONFIG = {
     label: "Tool Result",
     bg: "bg-purple-50 border-purple-200 dark:bg-purple-950/30 dark:border-purple-800",
     iconBg: "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400",
+  },
+  system_event: {
+    icon: Info,
+    label: "System",
+    bg: "bg-zinc-50 border-zinc-200 dark:bg-zinc-900/50 dark:border-zinc-700",
+    iconBg: "bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400",
   },
 };
 

@@ -112,7 +112,7 @@ public class Lesson12RunSimple implements RunSimple {
             ChatCompletion.Choice choice = completion.choices().get(0);
             messages.add(ChatCompletionMessageParam.ofAssistant(choice.message().toParam()));
 
-            if (choice.finishReason() != ChatCompletion.Choice.FinishReason.TOOL_CALLS) {
+            if (!ChatCompletion.Choice.FinishReason.TOOL_CALLS.equals(choice.finishReason())) {
                 choice.message().content().ifPresent(c -> log.info("Assistant: {}", c));
                 break;
             }

@@ -125,7 +125,7 @@ public class Lesson10RunSimple implements RunSimple {
 
             messages.add(ChatCompletionMessageParam.ofAssistant(assistantMessage.toParam()));
 
-            if (choice.finishReason() != ChatCompletion.Choice.FinishReason.TOOL_CALLS) {
+            if (!ChatCompletion.Choice.FinishReason.TOOL_CALLS.equals(choice.finishReason())) {
                 assistantMessage.content().ifPresent(content -> log.info("Assistant: {}", content));
                 break;
             }
@@ -384,7 +384,7 @@ public class Lesson10RunSimple implements RunSimple {
 
                     messages.add(ChatCompletionMessageParam.ofAssistant(assistantMessage.toParam()));
 
-                    if (choice.finishReason() != ChatCompletion.Choice.FinishReason.TOOL_CALLS) break;
+                    if (!ChatCompletion.Choice.FinishReason.TOOL_CALLS.equals(choice.finishReason())) break;
 
                     if (assistantMessage.toolCalls().isPresent()) {
                         for (ChatCompletionMessageToolCall toolCall : assistantMessage.toolCalls().get()) {

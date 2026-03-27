@@ -300,7 +300,6 @@ messages.add(ChatCompletionMessageParam.ofAssistant(
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson11 --prompt='Create 3 tasks on the board. Spawn an autonomous worker. Watch it claim and complete tasks on its own.'"
 ```
 

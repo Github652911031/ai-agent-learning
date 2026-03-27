@@ -325,7 +325,6 @@ private static final Set<String> VALID_MSG_TYPES = Set.of(
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson9 --prompt='Spawn a frontend teammate and a backend teammate. Ask frontend to create an index.html and backend to create a server config.'"
 ```
 

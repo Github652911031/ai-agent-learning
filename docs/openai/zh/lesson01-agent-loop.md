@@ -156,7 +156,6 @@ private String runBash(String command) {
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson1 --prompt='列出当前目录的文件, 然后统计 Java 文件数量'"
 ```
 

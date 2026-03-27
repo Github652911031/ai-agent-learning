@@ -248,7 +248,6 @@ tags: java, style, conventions
 3. 运行:
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson5 --prompt='检查项目代码是否符合 Java 编码规范'"
 ```
 

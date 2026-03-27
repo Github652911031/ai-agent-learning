@@ -196,7 +196,6 @@ private void agentLoop(...) {
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson3 --prompt='分析项目结构, 列出所有 Java 文件并为每个文件写一句话总结'"
 ```
 

@@ -72,7 +72,6 @@ String response = completion.choices().get(0).message().content().orElse("No res
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson0 --prompt='你好, 你能做什么?'"
 ```
 

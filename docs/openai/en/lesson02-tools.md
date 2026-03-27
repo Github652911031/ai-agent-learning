@@ -166,7 +166,6 @@ The model sends the exact text to find and the exact text to replace it with. Th
 ## Try It
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson2 --prompt='Read the pom.xml file and tell me what dependencies this project uses.'"
 ```
 

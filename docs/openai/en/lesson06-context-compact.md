@@ -219,7 +219,6 @@ Each file contains the full message history at the time of compression, one mess
 ## Try It
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson6 --prompt='Read every Java file in this project and summarize what each one does. There are many files so manage your context carefully.'"
 ```
 

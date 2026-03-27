@@ -185,7 +185,6 @@ private String runEdit(String path, String oldText, String newText) {
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson2 --prompt='读取 pom.xml, 找到 Java 版本配置, 然后创建一个 summary.txt 总结项目依赖'"
 ```
 

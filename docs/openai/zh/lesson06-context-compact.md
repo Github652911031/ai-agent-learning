@@ -234,7 +234,6 @@ private void agentLoop(List<ChatCompletionMessageParam> messages,
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson6 --prompt='逐个分析项目中的所有 Java 文件, 为每个文件写详细的代码审查报告'"
 ```
 

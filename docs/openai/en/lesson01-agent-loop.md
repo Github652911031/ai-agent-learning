@@ -144,7 +144,6 @@ private String runBash(String command) {
 ## Try It
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson1 --prompt='List the files in the current directory and tell me what you see.'"
 ```
 

@@ -284,7 +284,6 @@ tools.add(createTool("plan_approval",
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson10 --prompt='Spawn a worker teammate. Send it a task, then request it to shut down gracefully.'"
 ```
 

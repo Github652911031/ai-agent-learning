@@ -193,7 +193,6 @@ private Map<String, ToolHandler> createParentHandlers() {
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson4 --prompt='分析项目中每个 Lesson 文件的功能, 为每个写一句话总结'"
 ```
 

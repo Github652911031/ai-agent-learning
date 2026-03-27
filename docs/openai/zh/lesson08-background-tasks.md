@@ -256,7 +256,6 @@ static class TaskInfo {
 ## 试一试
 
 ```sh
-cd ai-agent-learning
 mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson8 --prompt='Run mvn test in background, then while it runs, read the pom.xml file.'"
 ```
 

@@ -4,18 +4,39 @@ import ai.agent.learning.base.RunSimple;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
-import com.openai.models.*;
+import com.openai.models.ChatCompletion;
+import com.openai.models.ChatCompletionAssistantMessageParam;
+import com.openai.models.ChatCompletionCreateParams;
+import com.openai.models.ChatCompletionMessage;
+import com.openai.models.ChatCompletionMessageParam;
+import com.openai.models.ChatCompletionMessageToolCall;
+import com.openai.models.ChatCompletionTool;
+import com.openai.models.ChatCompletionToolMessageParam;
+import com.openai.models.ChatCompletionUserMessageParam;
+import com.openai.models.ChatModel;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +101,9 @@ public class Lesson13RunSimple implements RunSimple {
         try {
             Files.createDirectories(tasksDir);
             Files.createDirectories(transcriptDir);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.debug("Failed to initialize runtime directories: tasksDir={}, transcriptDir={}", tasksDir, transcriptDir, e);
+        }
 
         client = OpenAIOkHttpClient.builder()
                 .apiKey(apiKey).baseUrl(baseUrl)
@@ -255,9 +278,13 @@ public class Lesson13RunSimple implements RunSimple {
                                 String text = new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
                                 String name = p.getParent().getFileName().toString();
                                 skills.put(name, Map.of("body", text, "description", "Skill: " + name));
-                            } catch (Exception ignored) {}
+                            } catch (Exception e) {
+                                Lesson13RunSimple.log.debug("Failed to load skill file {}", p, e);
+                            }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                Lesson13RunSimple.log.debug("Failed to scan skills directory {}", skillsDir, e);
+            }
         }
 
         public String getDescriptions() {
@@ -379,7 +406,7 @@ public class Lesson13RunSimple implements RunSimple {
 
         public TaskManager(Path tasksDir) {
             this.dir = tasksDir;
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { Lesson13RunSimple.log.debug("Failed to create directory {}", dir, e); }
             this.nextId = maxId() + 1;
         }
 
@@ -424,13 +451,17 @@ public class Lesson13RunSimple implements RunSimple {
                                             blockedBy.remove(Integer.valueOf(taskId));
                                             save(t);
                                         }
-                                    } catch (Exception ignored) {}
+                                    } catch (Exception e) {
+                                        Lesson13RunSimple.log.debug("Failed to update dependency file {}", p, e);
+                                    }
                                 });
-                    } catch (Exception ignored) {}
+                    } catch (Exception e) {
+                        Lesson13RunSimple.log.debug("Failed to scan task directory {}", dir, e);
+                    }
                 }
                 if ("deleted".equals(status)) {
                     try { Files.delete(dir.resolve("task_" + taskId + ".json")); }
-                    catch (Exception ignored) {}
+                    catch (Exception e) { Lesson13RunSimple.log.debug("Failed to delete task {}", taskId, e); }
                     return "Task " + taskId + " deleted";
                 }
             }
@@ -453,9 +484,11 @@ public class Lesson13RunSimple implements RunSimple {
             try {
                 Files.list(dir).filter(p -> p.getFileName().toString().matches("task_\\d+\\.json"))
                         .sorted().forEach(p -> {
-                            try { taskList.add(load(p)); } catch (Exception ignored) {}
+                            try { taskList.add(load(p)); } catch (Exception e) { Lesson13RunSimple.log.debug("Failed to load task file {}", p, e); }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                Lesson13RunSimple.log.debug("Failed to list task files in {}", dir, e);
+            }
             if (taskList.isEmpty()) return "No tasks.";
 
             StringBuilder sb = new StringBuilder();
@@ -492,7 +525,7 @@ public class Lesson13RunSimple implements RunSimple {
 
         private void save(Map<String, Object> task) {
             try { Files.write(dir.resolve("task_" + task.get("id") + ".json"), Lesson9RunSimple.mapToJson(task).getBytes(StandardCharsets.UTF_8)); }
-            catch (Exception ignored) {}
+            catch (Exception e) { Lesson13RunSimple.log.debug("Failed to save task state in {}", dir, e); }
         }
     }
 
@@ -581,14 +614,14 @@ public class Lesson13RunSimple implements RunSimple {
         private final Map<String, java.lang.Thread> threads = new ConcurrentHashMap<>();
 
         public TeammateManager() {
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { log.debug("Failed to create team directory {}", dir, e); }
             config = loadConfig();
         }
 
         private Map<String, Object> loadConfig() {
             if (Files.exists(configPath)) {
                 try { return Lesson9RunSimple.parseJsonToMap(new String(Files.readAllBytes(configPath), StandardCharsets.UTF_8)); }
-                catch (Exception ignored) {}
+                catch (Exception e) { log.debug("Failed to load config {}", configPath, e); }
             }
             Map<String, Object> cfg = new HashMap<>();
             cfg.put("team_name", "default");
@@ -598,7 +631,7 @@ public class Lesson13RunSimple implements RunSimple {
 
         private void saveConfig() {
             try { Files.write(configPath, Lesson9RunSimple.mapToJson(config).getBytes(StandardCharsets.UTF_8)); }
-            catch (Exception ignored) {}
+            catch (Exception e) { log.debug("Failed to save config {}", configPath, e); }
         }
 
         @SuppressWarnings("unchecked")
@@ -689,7 +722,12 @@ public class Lesson13RunSimple implements RunSimple {
                 boolean resume = false;
 
                 for (int i = 0; i < IDLE_TIMEOUT / POLL_INTERVAL; i++) {
-                    try { TimeUnit.SECONDS.sleep(POLL_INTERVAL); } catch (Exception ignored) {}
+                    try { TimeUnit.SECONDS.sleep(POLL_INTERVAL); }
+                    catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.debug("Idle polling interrupted for teammate {}", name, e);
+                        break;
+                    }
 
                     List<Map<String, Object>> inbox = bus.readInbox(name);
                     if (!inbox.isEmpty()) {
@@ -747,9 +785,13 @@ public class Lesson13RunSimple implements RunSimple {
                                 if ("pending".equals(t.get("status")) && t.get("owner") == null) {
                                     unclaimed.add(t);
                                 }
-                            } catch (Exception ignored) {}
+                            } catch (Exception e) {
+                                log.debug("Failed to parse task file {}", p, e);
+                            }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                log.debug("Failed to scan task directory {}", tasksDir, e);
+            }
             return unclaimed;
         }
 

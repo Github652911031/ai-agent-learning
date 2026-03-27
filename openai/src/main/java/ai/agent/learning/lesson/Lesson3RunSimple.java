@@ -118,7 +118,6 @@ public class Lesson3RunSimple implements RunSimple {
             }
 
             if (assistantMessage.toolCalls().isPresent()) {
-                List<Map<String, Object>> results = new ArrayList<>();
                 boolean usedTodo = false;
 
                 for (ChatCompletionMessageToolCall toolCall : assistantMessage.toolCalls().get()) {
@@ -131,11 +130,10 @@ public class Lesson3RunSimple implements RunSimple {
                     String output = executeTool(handlers, toolName, arguments);
                     log.info("Output (truncated): {}", output.length() > 200 ? output.substring(0, 200) : output);
 
-                    results.add(Map.of(
-                            "type", "tool_result",
-                            "tool_use_id", toolCall.id(),
-                            "content", output
-                    ));
+                    messages.add(ChatCompletionMessageParam.ofTool(ChatCompletionToolMessageParam.builder()
+                            .toolCallId(toolCall.id())
+                            .content(output)
+                            .build()));
 
                     if ("todo".equals(toolName)) {
                         usedTodo = true;
@@ -145,18 +143,10 @@ public class Lesson3RunSimple implements RunSimple {
                 // Nag reminder injection
                 roundsSinceTodo = usedTodo ? 0 : roundsSinceTodo + 1;
                 if (roundsSinceTodo >= 3) {
-                    results.add(0, Map.of(
-                            "type", "text",
-                            "text", "<reminder>Update your todos.</reminder>"
-                    ));
+                    messages.add(ChatCompletionMessageParam.ofUser(ChatCompletionUserMessageParam.builder()
+                            .content("<reminder>Update your todos.</reminder>")
+                            .build()));
                 }
-
-                // Add results as user message (simplified for OpenAI)
-                StringBuilder resultsContent = new StringBuilder();
-                for (Map<String, Object> result : results) {
-                    resultsContent.append(result.get("content")).append("\n");
-                }
-                messages.add(ChatCompletionMessageParam.ofUser(ChatCompletionUserMessageParam.builder().content(resultsContent.toString()).build()));
             }
         }
     }
@@ -529,3 +519,4 @@ public class Lesson3RunSimple implements RunSimple {
         String execute(Map<String, Object> args) throws Exception;
     }
 }
+

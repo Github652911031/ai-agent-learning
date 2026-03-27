@@ -275,9 +275,10 @@ public class Lesson5RunSimple implements RunSimple {
     private String runRead(String path, Integer limit) {
         try {
             List<String> lines = Files.readAllLines(safePath(path), StandardCharsets.UTF_8);
-            if (limit != null && limit < lines.size()) {
-                lines = lines.subList(0, limit);
-                lines.add("... (" + (lines.size() - limit) + " more lines)");
+            int originalSize = lines.size();
+            if (limit != null && limit < originalSize) {
+                lines = new ArrayList<>(lines.subList(0, limit));
+                lines.add("... (" + (originalSize - limit) + " more lines)");
             }
             return truncate(String.join("\n", lines), 50000);
         } catch (Exception e) {

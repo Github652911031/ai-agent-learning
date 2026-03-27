@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 public class Lesson4RunSimple implements RunSimple {
 
     private static final Logger log = LoggerFactory.getLogger(Lesson4RunSimple.class);
+    private static final long MAX_COMPLETION_TOKENS = 4096L;
 
     @Value("${openai.api-key}")
     private String apiKey;
@@ -97,11 +98,13 @@ public class Lesson4RunSimple implements RunSimple {
             ChatCompletionCreateParams.Builder paramsBuilder = ChatCompletionCreateParams.builder()
                     .model(ChatModel.of(modelName))
                     .messages(messages)
-                    .tools(tools);
+                    .tools(tools)
+                    .maxCompletionTokens(MAX_COMPLETION_TOKENS)
+                    .maxTokens(MAX_COMPLETION_TOKENS);
 
-            String sysPrompt = systemPrompt != null && !systemPrompt.isEmpty()
-                    ? systemPrompt
-                    : "You are a coding agent at " + workDir + ". Use the task tool to delegate exploration or subtasks.";
+            String sysPrompt = "You are a coding agent at " + workDir + ". " +
+                    "Use the task tool to delegate exploration or analysis subtasks to subagents. " +
+                    "Act, don't explain.";
             paramsBuilder.addSystemMessage(sysPrompt);
 
             ChatCompletion completion = client.chat().completions().create(paramsBuilder.build());
@@ -153,6 +156,8 @@ public class Lesson4RunSimple implements RunSimple {
                     .model(ChatModel.of(modelName))
                     .messages(subMessages)
                     .tools(childTools)
+                    .maxCompletionTokens(MAX_COMPLETION_TOKENS)
+                    .maxTokens(MAX_COMPLETION_TOKENS)
                     .addSystemMessage(subagentSystem);
 
             ChatCompletion completion = client.chat().completions().create(paramsBuilder.build());
@@ -231,9 +236,10 @@ public class Lesson4RunSimple implements RunSimple {
     private String runRead(String path, Integer limit) {
         try {
             List<String> lines = Files.readAllLines(safePath(path), StandardCharsets.UTF_8);
-            if (limit != null && limit < lines.size()) {
-                lines = lines.subList(0, limit);
-                lines.add("... (" + (lines.size() - limit) + " more lines)");
+            int originalSize = lines.size();
+            if (limit != null && limit < originalSize) {
+                lines = new ArrayList<>(lines.subList(0, limit));
+                lines.add("... (" + (originalSize - limit) + " more lines)");
             }
             return truncate(String.join("\n", lines), 50000);
         } catch (Exception e) {

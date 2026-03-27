@@ -4,6 +4,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * 测试基类，提供公共的测试设置
@@ -24,6 +25,9 @@ public abstract class BaseLessonTest {
      * 使用反射设置对象的私有字段
      */
     protected void setField(Object target, String fieldName, Object value) throws Exception {
+        Objects.requireNonNull(target, "target must not be null");
+        Objects.requireNonNull(fieldName, "fieldName must not be null");
+
         Field field = findField(target.getClass(), fieldName);
         field.setAccessible(true);
         field.set(target, value);

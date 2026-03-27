@@ -251,7 +251,9 @@ public class Lesson7RunSimple implements RunSimple {
                             blocked.put("blockedBy", blockedBy);
                             save(blocked);
                         }
-                    } catch (Exception ignored) {}
+                    } catch (Exception e) {
+                        Lesson7RunSimple.log.debug("Failed to update blocked task {}", blockedId, e);
+                    }
                 }
                 task.put("blocks", blocks);
             }
@@ -274,9 +276,13 @@ public class Lesson7RunSimple implements RunSimple {
                                     t.put("blockedBy", blockedBy);
                                     save(t);
                                 }
-                            } catch (Exception ignored) {}
+                            } catch (Exception e) {
+                                Lesson7RunSimple.log.debug("Failed to clear dependency from task file {}", p, e);
+                            }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                Lesson7RunSimple.log.debug("Failed to scan task directory {}", dir, e);
+            }
         }
 
         public String listAll() {
@@ -288,9 +294,13 @@ public class Lesson7RunSimple implements RunSimple {
                         .forEach(p -> {
                             try {
                                 tasks.add(parseJsonToMap(new String(Files.readAllBytes(p), StandardCharsets.UTF_8)));
-                            } catch (Exception ignored) {}
+                            } catch (Exception e) {
+                                Lesson7RunSimple.log.debug("Failed to load task file {}", p, e);
+                            }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                Lesson7RunSimple.log.debug("Failed to list task files in {}", dir, e);
+            }
 
             if (tasks.isEmpty()) return "No tasks.";
 

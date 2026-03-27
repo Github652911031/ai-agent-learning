@@ -4,7 +4,18 @@ import ai.agent.learning.base.RunSimple;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
-import com.openai.models.*;
+import com.openai.models.ChatCompletion;
+import com.openai.models.ChatCompletionAssistantMessageParam;
+import com.openai.models.ChatCompletionCreateParams;
+import com.openai.models.ChatCompletionMessage;
+import com.openai.models.ChatCompletionMessageParam;
+import com.openai.models.ChatCompletionMessageToolCall;
+import com.openai.models.ChatCompletionTool;
+import com.openai.models.ChatCompletionToolMessageParam;
+import com.openai.models.ChatCompletionUserMessageParam;
+import com.openai.models.ChatModel;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +30,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -207,7 +223,7 @@ public class Lesson10RunSimple implements RunSimple {
 
         public MessageBus(Path inboxDir) {
             this.dir = inboxDir;
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { Lesson10RunSimple.log.debug("Failed to create directory {}", dir, e); }
         }
 
         public String send(String sender, String to, String content, String msgType, Map<String, Object> extra) {
@@ -286,7 +302,7 @@ public class Lesson10RunSimple implements RunSimple {
             this.planRequests = planRequests;
             this.trackerLock = trackerLock;
 
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { Lesson10RunSimple.log.debug("Failed to create directory {}", dir, e); }
             this.configPath = dir.resolve("config.json");
             this.config = loadConfig();
         }
@@ -295,7 +311,7 @@ public class Lesson10RunSimple implements RunSimple {
             if (Files.exists(configPath)) {
                 try {
                     return Lesson9RunSimple.parseJsonToMap(new String(Files.readAllBytes(configPath), StandardCharsets.UTF_8));
-                } catch (Exception ignored) {}
+                } catch (Exception e) { Lesson10RunSimple.log.debug("Failed to load config {}", configPath, e); }
             }
             Map<String, Object> cfg = new HashMap<>();
             cfg.put("team_name", "default");
@@ -305,7 +321,7 @@ public class Lesson10RunSimple implements RunSimple {
 
         protected void saveConfig() {
             try { Files.write(configPath, Lesson9RunSimple.mapToJson(config).getBytes(StandardCharsets.UTF_8)); }
-            catch (Exception ignored) {}
+            catch (Exception e) { Lesson10RunSimple.log.debug("Failed to save config {}", configPath, e); }
         }
 
         @SuppressWarnings("unchecked")

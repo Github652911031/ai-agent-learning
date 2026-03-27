@@ -4,19 +4,34 @@ import ai.agent.learning.base.RunSimple;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
-import com.openai.models.*;
+import com.openai.models.ChatCompletion;
+import com.openai.models.ChatCompletionAssistantMessageParam;
+import com.openai.models.ChatCompletionCreateParams;
+import com.openai.models.ChatCompletionMessageParam;
+import com.openai.models.ChatCompletionMessageToolCall;
+import com.openai.models.ChatCompletionTool;
+import com.openai.models.ChatCompletionToolMessageParam;
+import com.openai.models.ChatCompletionUserMessageParam;
+import com.openai.models.ChatModel;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 /**
  * Lesson11RunSimple - Autonomous Agents
@@ -60,7 +75,7 @@ public class Lesson11RunSimple implements RunSimple {
         inboxDir = teamDir.resolve("inbox");
         tasksDir = workDir.resolve(".tasks");
 
-        try { Files.createDirectories(tasksDir); } catch (Exception ignored) {}
+        try { Files.createDirectories(tasksDir); } catch (Exception e) { log.debug("Failed to create task directory {}", tasksDir, e); }
 
         client = OpenAIOkHttpClient.builder()
                 .apiKey(apiKey).baseUrl(baseUrl)
@@ -127,9 +142,9 @@ public class Lesson11RunSimple implements RunSimple {
                                     (t.get("blockedBy") == null || ((List<?>) t.get("blockedBy")).isEmpty())) {
                                 unclaimed.add(t);
                             }
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) { log.debug("Failed to parse task file {}", p, e); }
                     });
-        } catch (Exception ignored) {}
+        } catch (Exception e) { log.debug("Failed to scan tasks directory {}", tasksDir, e); }
         return unclaimed;
     }
 
@@ -248,7 +263,12 @@ public class Lesson11RunSimple implements RunSimple {
                 int polls = IDLE_TIMEOUT / POLL_INTERVAL;
 
                 for (int i = 0; i < polls; i++) {
-                    try { TimeUnit.SECONDS.sleep(POLL_INTERVAL); } catch (Exception ignored) {}
+                    try { TimeUnit.SECONDS.sleep(POLL_INTERVAL); }
+                    catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        log.debug("Idle polling interrupted for teammate {}", name, e);
+                        break;
+                    }
 
                     List<Map<String, Object>> inbox = bus.readInbox(name);
                     if (!inbox.isEmpty()) {

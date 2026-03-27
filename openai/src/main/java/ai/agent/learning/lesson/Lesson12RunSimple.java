@@ -4,15 +4,30 @@ import ai.agent.learning.base.RunSimple;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
-import com.openai.models.*;
+import com.openai.models.ChatCompletion;
+import com.openai.models.ChatCompletionCreateParams;
+import com.openai.models.ChatCompletionMessageParam;
+import com.openai.models.ChatCompletionMessageToolCall;
+import com.openai.models.ChatCompletionTool;
+import com.openai.models.ChatCompletionToolMessageParam;
+import com.openai.models.ChatCompletionUserMessageParam;
+import com.openai.models.ChatModel;
+import com.openai.models.FunctionDefinition;
+import com.openai.models.FunctionParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -95,7 +110,7 @@ public class Lesson12RunSimple implements RunSimple {
                     }
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) { log.debug("Failed to detect git repository root from {}", cwd, e); }
         return null;
     }
 
@@ -135,7 +150,7 @@ public class Lesson12RunSimple implements RunSimple {
         public EventBus(Path path) {
             this.path = path;
             try { Files.createDirectories(path.getParent()); Files.createFile(path); }
-            catch (Exception ignored) {}
+            catch (Exception e) { Lesson12RunSimple.log.debug("Failed to initialize event log {}", path, e); }
         }
 
         public void emit(String event, Map<String, Object> task, Map<String, Object> worktree, String error) {
@@ -148,7 +163,7 @@ public class Lesson12RunSimple implements RunSimple {
             try {
                 Files.write(path, (Lesson9RunSimple.mapToJson(payload) + "\n").getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (Exception ignored) {}
+            } catch (Exception e) { Lesson12RunSimple.log.debug("Failed to append event log {}", path, e); }
         }
 
         public String listRecent(int limit) {
@@ -168,7 +183,7 @@ public class Lesson12RunSimple implements RunSimple {
 
         public TaskManager(Path tasksDir) {
             this.dir = tasksDir;
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { Lesson12RunSimple.log.debug("Failed to create directory {}", dir, e); }
             this.nextId = maxId() + 1;
         }
 
@@ -232,9 +247,9 @@ public class Lesson12RunSimple implements RunSimple {
             try {
                 Files.list(dir).filter(p -> p.getFileName().toString().matches("task_\\d+\\.json"))
                         .sorted().forEach(p -> {
-                            try { taskList.add(load(p)); } catch (Exception ignored) {}
+                            try { taskList.add(load(p)); } catch (Exception e) { Lesson12RunSimple.log.debug("Failed to load task file {}", p, e); }
                         });
-            } catch (Exception ignored) {}
+            } catch (Exception e) { Lesson12RunSimple.log.debug("Failed to list task files in {}", dir, e); }
             if (taskList.isEmpty()) return "No tasks.";
 
             StringBuilder sb = new StringBuilder();
@@ -268,7 +283,7 @@ public class Lesson12RunSimple implements RunSimple {
         private void save(Map<String, Object> task) {
             try { Files.write(dir.resolve("task_" + task.get("id") + ".json"),
                     Lesson9RunSimple.mapToJson(task).getBytes(StandardCharsets.UTF_8)); }
-            catch (Exception ignored) {}
+            catch (Exception e) { Lesson12RunSimple.log.debug("Failed to save task state in {}", dir, e); }
         }
     }
 
@@ -284,11 +299,11 @@ public class Lesson12RunSimple implements RunSimple {
             this.tasks = tasks;
             this.events = events;
             this.dir = repoRoot.resolve(".worktrees");
-            try { Files.createDirectories(dir); } catch (Exception ignored) {}
+            try { Files.createDirectories(dir); } catch (Exception e) { Lesson12RunSimple.log.debug("Failed to create directory {}", dir, e); }
             this.indexPath = dir.resolve("index.json");
             if (!Files.exists(indexPath)) {
                 try { Files.write(indexPath, "{\"worktrees\":[]}".getBytes(StandardCharsets.UTF_8)); }
-                catch (Exception ignored) {}
+                catch (Exception e) { Lesson12RunSimple.log.debug("Failed to initialize worktree index {}", indexPath, e); }
             }
             this.gitAvailable = isGitRepo();
         }
@@ -487,7 +502,7 @@ public class Lesson12RunSimple implements RunSimple {
 
         private void saveIndex(Map<String, Object> idx) {
             try { Files.write(indexPath, Lesson9RunSimple.mapToJson(idx).getBytes(StandardCharsets.UTF_8)); }
-            catch (Exception ignored) {}
+            catch (Exception e) { Lesson12RunSimple.log.debug("Failed to save worktree index {}", indexPath, e); }
         }
     }
 

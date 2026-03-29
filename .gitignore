@@ -10,3 +10,4 @@ web/.pageview-count.json
 .tasks/
 .transcripts/
 .worktrees/
+.vscode/

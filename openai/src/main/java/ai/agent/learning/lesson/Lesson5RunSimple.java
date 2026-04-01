@@ -153,6 +153,7 @@ public class Lesson5RunSimple implements RunSimple {
         }
 
         private void loadAll(Path skillsDir) {
+            log.info("Loading skills from: {}", skillsDir);
             if (!Files.exists(skillsDir)) return;
 
             try {

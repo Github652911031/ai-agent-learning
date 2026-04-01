@@ -130,7 +130,7 @@ public class Lesson8RunSimple implements RunSimple {
                     .messages(messages)
                     .tools(tools)
                     .addSystemMessage(sysPrompt);
-
+            log.info("Agent message: {}", messages);
             ChatCompletion completion = client.chat().completions().create(paramsBuilder.build());
             ChatCompletion.Choice choice = completion.choices().get(0);
             ChatCompletionMessage assistantMessage = choice.message();

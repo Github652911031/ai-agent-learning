@@ -83,7 +83,7 @@ public class Lesson3RunSimple implements RunSimple {
         OpenAIClient client = OpenAIOkHttpClient.builder()
                 .apiKey(apiKey)
                 .baseUrl(baseUrl)
-                .proxy(proxy)
+//                .proxy(proxy)
                 .build();
 
         List<ChatCompletionMessageParam> messages = new ArrayList<>();

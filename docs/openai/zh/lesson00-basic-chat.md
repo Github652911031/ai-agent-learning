@@ -72,7 +72,7 @@ String response = completion.choices().get(0).message().content().orElse("No res
 ## 试一试
 
 ```sh
-mvn spring-boot:run -pl openai -Dspring-boot.run.arguments="--lesson=lesson0 --prompt='你好, 你能做什么?'"
+mvn spring-boot:run -pl openai "-Dspring-boot.run.arguments=--lesson=lesson0 --prompt=你好, 你能做什么?"
 ```
 
 **源码**: [`Lesson0RunSimple.java`](../../openai/src/main/java/ai/agent/learning/lesson/Lesson0RunSimple.java)

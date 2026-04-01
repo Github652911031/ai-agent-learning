@@ -102,8 +102,7 @@ public class Lesson4RunSimple implements RunSimple {
                     .model(ChatModel.of(modelName))
                     .messages(messages)
                     .tools(tools)
-                    .maxCompletionTokens(MAX_COMPLETION_TOKENS)
-                    .maxTokens(MAX_COMPLETION_TOKENS);
+                    .maxCompletionTokens(MAX_COMPLETION_TOKENS);
 
             String sysPrompt = "You are a coding agent at " + workDir + ". " +
                     "Use the task tool to delegate exploration or analysis subtasks to subagents. " +
@@ -160,7 +159,6 @@ public class Lesson4RunSimple implements RunSimple {
                     .messages(subMessages)
                     .tools(childTools)
                     .maxCompletionTokens(MAX_COMPLETION_TOKENS)
-                    .maxTokens(MAX_COMPLETION_TOKENS)
                     .addSystemMessage(subagentSystem);
 
             ChatCompletion completion = client.chat().completions().create(paramsBuilder.build());
